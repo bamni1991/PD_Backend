@@ -12,33 +12,28 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Based on user schema, users table has `updated_at` and `created_at`.
+    // Default timestamps = true is correct.
+
     protected $fillable = [
         'name',
         'email',
+        'mobile',
+        'profile_image',
         'password',
+        'role',
+        'status',
+        'last_login',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
-        'remember_token',
+        // 'remember_token', // Schema doesn't have remember_token in the dump!
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'last_login' => 'datetime',
+        'email_verified_at' => 'datetime' // Not in schema, but standard
+
     ];
 }

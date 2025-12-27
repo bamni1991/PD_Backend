@@ -62,8 +62,85 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'mobile' => $user->mobile,
                     'role_name' => $user->role,
+                    'profile_image' => $user->profile_image,
                 ]
             ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function uploadProfileImage(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|exists:users,id',
+                'profile_image' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+
+            $user_id = $request->user_id;
+            $base64_image = $request->profile_image;
+
+            // Check if it's a data URL
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64_image, $type)) {
+                $base64_image = substr($base64_image, strpos($base64_image, ',') + 1);
+                $type = strtolower($type[1]); // jpg, png, gif
+                if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                    $type = 'png'; // Default
+                }
+            } else {
+                // If the user sent image_type separately or it's raw base64
+                $type = $request->input('image_type', 'png');
+            }
+
+            $type = strtolower($type);
+            if ($type == 'jpeg')
+                $type = 'jpg';
+
+            $image_base64 = base64_decode($base64_image);
+
+            if ($image_base64 === false) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Invalid base64 string',
+                ], 400);
+            }
+
+            $fileName = 'user_' . $user_id . '_' . time() . '_' . uniqid() . '.' . $type;
+            $path = public_path('users');
+
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            file_put_contents($path . '/' . $fileName, $image_base64);
+
+            // Update user profile_image in DB
+            $dbPath = 'users/' . $fileName;
+            DB::table('users')
+                ->where('id', $user_id)
+                ->update(['profile_image' => $dbPath]);
+            // uploadResponse.data?.fileName;
+            return response()->json([
+                'status' => 200,
+                'message' => 'Image uploaded successfully',
+                'data' => [
+                    'fileName' => $dbPath
+                ]
+            ]);
+
         } catch (Exception $e) {
             return response()->json([
                 'status' => 500,
