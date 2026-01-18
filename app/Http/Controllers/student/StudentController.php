@@ -24,6 +24,7 @@ use App\Models\MotherTongue;
 use App\Models\ClassFee;
 use App\Models\StudentFee;
 
+use App\Models\Teacher;
 
 use Illuminate\Support\Facades\Hash;
 class StudentController extends Controller
@@ -752,20 +753,7 @@ class StudentController extends Controller
     public function collectFees(Request $request)
     {
         try {
-            // {"student_id":1,"date":"2025-12-27","amount":3000,"type":"fees","mode":"Cash","status":"Paid","paidBy":"Paid by","collectedBy":"School Admin","remarks":null}  
-// CREATE TABLE `student_fees` (
-//   `id` int(11) NOT NULL AUTO_INCREMENT,
-//   `student_id` int(11) NOT NULL,
-//   `class_fee_id` int(11) NOT NULL,
-//   `academic_session_id` int(11) NOT NULL,
-//   `amount` decimal(10,2) NOT NULL,
-//   `type` enum('fees','discount') NOT NULL DEFAULT 'fees',
-//   `status` enum('pending','paid') DEFAULT 'pending',
-//   `paidBy` varchar(256) DEFAULT NULL,
-//   `collectedBy` varchar(256) DEFAULT NULL,
-//   `mode` varchar(256) DEFAULT NULL,
-//   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-//             \Log::info('collectFees: ' . json_encode($request->all()));
+
 
             $validateData = $request->validate([
                 'student_id' => 'required|exists:students,id',
@@ -795,6 +783,7 @@ class StudentController extends Controller
                 'paidBy' => $request->paidBy,
                 'collectedBy' => $request->collectedBy,
                 'mode' => $request->mode,
+                'created_at' => \Carbon\Carbon::parse($request->date)->format('Y-m-d H:i:s'),
             ]);
 
             return response()->json([
@@ -850,6 +839,7 @@ class StudentController extends Controller
                 'paidBy' => $request->paidBy,
                 'collectedBy' => $request->collectedBy,
                 'mode' => $request->mode,
+                'created_at' => \Carbon\Carbon::parse($request->date)->format('Y-m-d H:i:s'),
             ]);
 
             return response()->json([
@@ -882,6 +872,70 @@ class StudentController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error('deleteFees error: ' . $e->getMessage());
+        }
+    }
+    public function getStudentDashboardDetails()
+    {
+        try {
+            if (!$this->ActiveSessionID) {
+                return response()->json([
+                    'status' => true,
+                    'data' => [
+                        'totalStudents' => 0,
+                        'totalCollection' => 0,
+                        'feesPending' => 0,
+                    ],
+                ]);
+            }
+
+            // 1. Total Students
+            $totalStudents = Student::where('academic_session_id', $this->ActiveSessionID)->count();
+
+            // 2. Total Expected Fees (Sum of class fees for all students in session)
+            $expectedFees = Student::where('students.academic_session_id', $this->ActiveSessionID)
+                ->join('class_fees', function ($join) {
+                    $join->on('students.class_id', '=', 'class_fees.class_id')
+                        ->where('class_fees.academic_session_id', $this->ActiveSessionID);
+                })
+                ->sum('class_fees.fee_amount');
+
+            // 3. Total Discounts
+            $totalDiscounts = StudentFee::where('academic_session_id', $this->ActiveSessionID)
+                ->where('type', 'discount')
+                ->sum('amount');
+
+            // 4. Total Collected (Paid Fees)
+            $totalCollected = StudentFee::where('academic_session_id', $this->ActiveSessionID)
+                ->where('type', 'fees')
+                ->where('status', 'paid')
+                ->sum('amount');
+
+            // 5. Calculate Pending
+            $feesPending = ($expectedFees - $totalDiscounts) - $totalCollected;
+
+
+            $totalTeacher = Teacher::where('academic_session_id', $this->ActiveSessionID)->count();
+
+
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Dashboard details fetched successfully',
+                'data' => [
+                    'totalStudents' => $totalStudents,
+                    'totalCollection' => round($totalCollected, 2),
+                    'feesPending' => round($feesPending, 2),
+                    'totalTeacher' => $totalTeacher,
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('getStudentDashboardDetails error: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Error fetching dashboard details',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 }

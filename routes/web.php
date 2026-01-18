@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\DB;
 */
 
 Route::get('/', function () {
-   return DB::table('users')->get();
+   return 'Under Maintances ';
 });

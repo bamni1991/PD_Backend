@@ -82,6 +82,9 @@ class AuthController extends Controller
                 'profile_image' => 'required',
             ]);
 
+
+
+
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 400,
@@ -129,17 +132,24 @@ class AuthController extends Controller
 
             // Update user profile_image in DB
             $dbPath = 'users/' . $fileName;
-            DB::table('users')
+            $updated = DB::table('users')
                 ->where('id', $user_id)
-                ->update(['profile_image' => $dbPath]);
+                ->update([
+                    'profile_image' => $dbPath,
+                    'updated_at' => now()
+                ]);
+
             // uploadResponse.data?.fileName;
-            return response()->json([
+            return $updated ? response()->json([
                 'status' => 200,
                 'message' => 'Image uploaded successfully',
                 'data' => [
                     'fileName' => $dbPath
                 ]
-            ]);
+            ], 200) : response()->json([
+                            'status' => 400,
+                            'message' => 'Image upload failed',
+                        ], 400);
 
         } catch (Exception $e) {
             return response()->json([
