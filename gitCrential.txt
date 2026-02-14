@@ -1,0 +1,10 @@
+loout all git acoount
+
+login by browser and login vshivsamb1@gmail.com
+
+gir repository
+
+git@github.com:bamni1991/PD_Backend.git
+https://github.com/bamni1991/PD_Backend.git
+
+push code main 

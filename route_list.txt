@@ -1,0 +1,83 @@
+﻿===========================================
+SCHOOL API - ALL ROUTES (29 Total)
+Base URL: http://localhost/Python_my/api/school
+===========================================
+
+AUTHENTICATION (2 routes)
+--------------------------
+1.  POST   /api/school/login
+2.  POST   /api/school/upload-profile-image
+
+STUDENTS (11 routes)
+--------------------
+3.  GET    /api/school/students/getStudentFromCreatingData
+4.  POST   /api/school/students/register
+5.  GET    /api/school/students/feachStudentAdminScreenData
+6.  GET    /api/school/students/{studentId}
+7.  POST   /api/school/students/update/{studentId}
+8.  GET    /api/school/students/getUserFeesHistoryData/{studentId}
+9.  POST   /api/school/students/updateFees/{studentFeeId}
+10. POST   /api/school/students/collectFees
+11. DELETE /api/school/students/deleteFees/{studentFeeId}
+12. GET    /api/school/student-dashboard-details
+13. GET    /api/school/student/{studentId}
+
+TEACHERS (7 routes)
+-------------------
+14. POST   /api/school/teachers/register
+15. GET    /api/school/teachers/all
+16. GET    /api/school/teachers/{teacherId}
+17. POST   /api/school/teachers/update/{teacherId}
+18. DELETE /api/school/teachers/delete/{teacherId}
+19. GET    /api/school/getAllTeachers
+20. GET    /api/school/teacher/{teacherId}
+
+TEACHER ATTENDANCE (3 routes)
+------------------------------
+21. POST   /api/school/teacher-attendance/mark
+22. GET    /api/school/teacher-attendance/today/{userId}
+23. GET    /api/school/teacher-attendance/history/{userId}
+
+TEACHER LEAVES (2 routes)
+--------------------------
+24. POST   /api/school/teacher-leaves/apply
+25. GET    /api/school/teacher-leaves/history/{userId}
+
+SCHOOL HOLIDAYS (4 routes)
+---------------------------
+26. POST   /api/school/school-holidays
+27. GET    /api/school/school-holidays
+28. PUT    /api/school/school-holidays/{holidayId}
+29. DELETE /api/school/school-holidays/{holidayId}
+
+===========================================
+QUICK TEST EXAMPLES
+===========================================
+
+Test Login:
+-----------
+curl -X POST http://localhost/Python_my/api/school/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password123"}'
+
+Test Get All Teachers:
+----------------------
+curl -X GET http://localhost/Python_my/api/school/getAllTeachers
+
+Test Get Student:
+-----------------
+curl -X GET http://localhost/Python_my/api/school/student/1
+
+Test Get Holidays:
+------------------
+curl -X GET http://localhost/Python_my/api/school/school-holidays
+
+===========================================
+FILES CREATED FOR TESTING
+===========================================
+
+1. API_TESTING_GUIDE.md - Detailed documentation with examples
+2. School_API_Postman_Collection.json - Import into Postman
+3. ROUTE_LIST.txt - This file (quick reference)
+
+===========================================

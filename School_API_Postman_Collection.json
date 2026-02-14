@@ -1,0 +1,602 @@
+{
+    "info": {
+        "name": "School API - Complete Collection",
+        "description": "All School API endpoints for testing",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost/Python_my/api/school",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Upload Profile Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": ""
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/upload-profile-image",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "upload-profile-image"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Students",
+            "item": [
+                {
+                    "name": "Get Student Creating Data",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/students/getStudentFromCreatingData",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "getStudentFromCreatingData"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Register Student",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"class_id\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/students/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Fetch Student Admin Screen Data",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/students/feachStudentAdminScreenData",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "feachStudentAdminScreenData"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Student By ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/students/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Student",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Updated\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/students/update/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "update",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User Fees History",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/students/getUserFeesHistoryData/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "getUserFeesHistoryData",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Fees",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"amount\": 5000,\n  \"status\": \"paid\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/students/updateFees/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "updateFees",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Collect Fees",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"student_id\": 1,\n  \"amount\": 5000\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/students/collectFees",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "collectFees"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Fees",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{base_url}}/students/deleteFees/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "students",
+                                "deleteFees",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Student Dashboard Details",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/student-dashboard-details",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "student-dashboard-details"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Teachers",
+            "item": [
+                {
+                    "name": "Register Teacher",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/teachers/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teachers",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Teachers",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/teachers/all",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teachers",
+                                "all"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Teachers (Alt)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/getAllTeachers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "getAllTeachers"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Teacher By ID",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/teachers/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teachers",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Teacher",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Jane Updated\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/teachers/update/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teachers",
+                                "update",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Teacher",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{base_url}}/teachers/delete/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teachers",
+                                "delete",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Teacher Attendance",
+            "item": [
+                {
+                    "name": "Mark Attendance",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": 1,\n  \"date\": \"2026-02-14\",\n  \"status\": \"present\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/teacher-attendance/mark",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teacher-attendance",
+                                "mark"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Today Attendance",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/teacher-attendance/today/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teacher-attendance",
+                                "today",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Attendance History",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/teacher-attendance/history/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teacher-attendance",
+                                "history",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Teacher Leaves",
+            "item": [
+                {
+                    "name": "Apply Leave",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": 1,\n  \"start_date\": \"2026-02-20\",\n  \"end_date\": \"2026-02-22\",\n  \"reason\": \"Personal\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/teacher-leaves/apply",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teacher-leaves",
+                                "apply"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Leave History",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/teacher-leaves/history/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "teacher-leaves",
+                                "history",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "School Holidays",
+            "item": [
+                {
+                    "name": "Create Holiday",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Independence Day\",\n  \"date\": \"2026-08-15\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/school-holidays",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "school-holidays"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Holidays",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/school-holidays",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "school-holidays"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Holiday",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Independence Day Updated\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/school-holidays/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "school-holidays",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Holiday",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{base_url}}/school-holidays/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "school-holidays",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
