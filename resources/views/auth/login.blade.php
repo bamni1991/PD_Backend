@@ -196,7 +196,7 @@
             <a class="logo d-inline-block" href="{{ route('home') }}">
                 <img alt="#" src="{{ asset('assets') }}/images/logo/1.png">
             </a>
-            <h1 class="welcome-text">Welcome Back</h1>
+            <h1 class="welcome-text">Welcome Back 1</h1>
             <p class="subtitle-text">Sign in to access your dashboard</p>
         </div>
 
