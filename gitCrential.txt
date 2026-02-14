@@ -7,4 +7,11 @@ gir repository
 git@github.com:bamni1991/PD_Backend.git
 https://github.com/bamni1991/PD_Backend.git
 
+cmdkey /delete:git:https://github.com
+git config --global --unset credential.helper
+git config --global credential.helper manager
+git config user.email "vshivsamb1@gmail.com"
+git config user.name "bamni1991"
+git remote set-url origin https://github.com/bamni1991/PD_Backend.git
+git push -u origin main
 push code main 

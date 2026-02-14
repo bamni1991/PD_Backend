@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export APPPATH=/home/ramenter/laravel_app
+    - export PUBLICPATH=/home/ramenter/public_html
+
+    - /bin/cp -R * $APPPATH
+    - /bin/cp -R public/* $PUBLICPATH
