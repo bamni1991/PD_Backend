@@ -10,11 +10,14 @@ use App\Modules\School\Models\User;
 use App\Modules\School\Models\Teacher;
 use App\Modules\School\Models\TeacherClass;
 use App\Modules\School\Models\TeacherAttendance;
+use App\Modules\School\Models\School;
 use Exception;
 use App\Modules\School\Models\AcademicSession;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\School\Models\TeacherLeave;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class TeacherController extends Controller
 {
@@ -120,7 +123,7 @@ class TeacherController extends Controller
 
         } catch (Exception $e) {
             DB::rollback();
-            \Log::info('Error saving teacher: ' . $e->getMessage());
+        Log::info('Error saving teacher: ' . $e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Error saving teacher',
@@ -139,7 +142,7 @@ class TeacherController extends Controller
     public function getAllTeachers()
     {
         $teachers = Teacher::with('user', 'classes.class', 'classes.academicSession')->get();
-        \Log::info($teachers);
+        Log::info($teachers);
         return response()->json([
             'status' => true,
             'message' => 'Teachers fetched successfully',
@@ -150,7 +153,7 @@ class TeacherController extends Controller
     public function getTeacherById($teacherId)
     {
         $teacher = Teacher::with(['user', 'classes.class'])->find($teacherId);
-        \Log::info($teacher);
+        Log::info($teacher);
 
         if (!$teacher) {
             return response()->json([
@@ -287,7 +290,7 @@ class TeacherController extends Controller
 
         } catch (Exception $e) {
             DB::rollback();
-            \Log::info('Error updating teacher: ' . $e->getMessage());
+            Log::info('Error updating teacher: ' . $e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Error updating teacher',
@@ -328,6 +331,8 @@ class TeacherController extends Controller
 
     public function markAttendance(Request $request)
     {
+        Log::info('Entering markAttendance');
+        Log::info($request->all());
         DB::beginTransaction();
 
         try {
@@ -341,7 +346,7 @@ class TeacherController extends Controller
                 ], 404);
             }
 
-            $teacher = Teacher::where('user_id', $userId)->first();
+            $teacher = Teacher::where('user_id', $userId)->with('school')->first();
             $active_academic_session_id = AcademicSession::where('is_active', 1)->first()->id;
             if (!$teacher) {
                 return response()->json([
@@ -368,6 +373,40 @@ class TeacherController extends Controller
                 'latitude' => 'nullable',
                 'longitude' => 'nullable',
             ]);
+
+            // ✅ LOCATION VALIDATION - Check if teacher is within allowed radius
+            if ($request->latitude && $request->longitude && $teacher->school_id) {
+                $school = School::find($teacher->school_id);
+                
+                if ($school && $school->latitude && $school->longitude) {
+                    // Check if teacher is within the allowed radius
+                    $isWithinRadius = $school->isWithinRadius($request->latitude, $request->longitude);
+                    
+                    if (!$isWithinRadius) {
+                        // Calculate actual distance for error message
+                        $distance = $school->calculateDistance(
+                            $school->latitude,
+                            $school->longitude,
+                            $request->latitude,
+                            $request->longitude
+                        );
+                        
+                        DB::rollback();
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'You are outside the allowed radius for marking attendance',
+                            'error_code' => 'LOCATION_OUT_OF_RANGE',
+                            'details' => [
+                                'school_name' => $school->school_name,
+                                'allowed_radius' => $school->allowed_radius,
+                                'current_distance' => round($distance, 2),
+                                'message_marathi' => 'तुम्ही शाळेच्या परवानगी असलेल्या क्षेत्राबाहेर आहात. कृपया शाळेच्या परिसरात या.',
+                            ]
+                        ], 403);
+                    }
+                }
+            }
+
             // [2026-01-18 13:13:33] local.INFO: Attendance request: {"user_id":102,"attendance_date":"2026-01-18","out_time":"18:43:31","status":"present","latitude":18.680141,"longitude":73.8513312,"teacher_id":2,"academic_session_id":1}  
 
             // \Log::info('Attendance request: ' . json_encode($request->all()));
@@ -411,7 +450,7 @@ class TeacherController extends Controller
 
         } catch (Exception $e) {
             DB::rollback();
-            \Log::info('Error marking attendance: ' . $e->getMessage());
+            Log::info('Error marking attendance: ' . $e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Error marking attendance',
@@ -473,7 +512,7 @@ class TeacherController extends Controller
             }
 
         } catch (Exception $e) {
-            \Log::info('Error getting attendance: ' . $e->getMessage());
+            Log::info('Error getting attendance: ' . $e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Error getting attendance',
@@ -485,6 +524,12 @@ class TeacherController extends Controller
 
     public function getTeacherAttendanceHistory($userId, Request $request)
     {
+
+        Log::info('Entering getTeacherAttendanceHistory');
+        Log::info('User ID: ' . $userId);
+        Log::info('Request Query: ' . $request->getQueryString());
+
+        try {
         $month = (int) $request->month;
         $year = (int) $request->year;
 
@@ -595,6 +640,14 @@ class TeacherController extends Controller
             'stats' => $stats,
             'attendance_list' => $finalList,
         ]);
+        } catch (Exception $e) {
+            Log::info('Error fetching attendance history: ' . $e->getMessage());
+            return response()->json([
+                'status' => 500,
+                'message' => 'Error fetching attendance history',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 
@@ -703,7 +756,7 @@ class TeacherController extends Controller
                 'leave' => $leave,
             ], 200);
         } catch (Exception $e) {
-            \Log::info('Error applying leave: ' . $e->getMessage());
+            Log::info('Error applying leave: ' . $e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Error applying leave',
@@ -738,11 +791,11 @@ class TeacherController extends Controller
             $year = substr($yearmonth, 0, 4);
             $month = substr($yearmonth, 5, 2);
             $teacher = Teacher::where('user_id', $userId)->first();
-            \Log::info('Teacher leave history fetched successfully' . $userId);
+            Log::info('Teacher leave history fetched successfully' . $userId);
             if (!$teacher) {
                 $teacher = Teacher::find($userId);
             }
-            \Log::info('Teacher leave history fetched successfully' . $teacher->id);
+            Log::info('Teacher leave history fetched successfully' . $teacher->id);
 
             if (!$teacher) {
                 return response()->json([
@@ -758,7 +811,7 @@ class TeacherController extends Controller
                 ->orderBy('start_date', 'desc')
                 ->get();
 
-            \Log::info('Teacher leave history fetched successfully' . $leaves);
+            Log::info('Teacher leave history fetched successfully' . $leaves);
             return response()->json([
                 'status' => true,
                 'message' => 'Teacher leave history fetched successfully',
@@ -766,7 +819,7 @@ class TeacherController extends Controller
             ], 200);
 
         } catch (Exception $e) {
-            \Log::info('Error fetching teacher history: ' . $e->getMessage());
+            Log::info('Error fetching teacher history: ' . $e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Error fetching teacher history',
