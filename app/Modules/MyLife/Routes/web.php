@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Modules\MyLife\Controllers\FileManagerController;
+use App\Modules\MyLife\Controllers\PersonalDiaryController;
 
 Route::get('/', function () {
     return view('dashboard');
@@ -31,7 +32,12 @@ Route::prefix('file-manager')->middleware('auth')->group(function () {
     Route::post('/delete', [FileManagerController::class, 'deleteFile'])->name('file-manager.delete');
 });
 
-// UI Test
-Route::get('/ui-test', function () {
-    return view('ui.content');
-})->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/personal-diary/export-pdf', [PersonalDiaryController::class, 'exportPdf'])->name('personal-diary.export-pdf');
+    Route::get('/personal-diary', [PersonalDiaryController::class, 'index'])->name('personal-diary.index');
+    Route::post('/personal-diary', [PersonalDiaryController::class, 'store'])->name('personal-diary.store');
+    Route::put('/personal-diary/{id}', [PersonalDiaryController::class, 'update'])->name('personal-diary.update');
+    Route::delete('/personal-diary/{id}', [PersonalDiaryController::class, 'destroy'])->name('personal-diary.destroy');
+});
+
+

@@ -9,7 +9,7 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
- 
+
     <meta content="la-themes" name="author">
     <link href="{{ asset('assets/images/logo/favicon.png') }}" rel="icon" type="image/x-icon">
     <link href="{{ asset('assets/images/logo/favicon.png') }}" rel="shortcut icon" type="image/x-icon">
@@ -102,14 +102,14 @@
                     <div class="col-md-9 col-12">
                         <ul class="footer-text">
                             <li>
-                                <p class="mb-0">Copyright © 2025 axelit. All rights reserved 💖</p>
+                                <p class="mb-0">Copyright © {{ date('Y') }} Vishwas Tech </p>
                             </li>
                             <li><a href="#"> V1.0.0 </a></li>
                         </ul>
                     </div>
                     <div class="col-md-3">
                         <ul class="footer-text text-end">
-                            <li><a href="mailto:teqlathemes@gmail.com."> Need Help <i class="ti ti-help"></i></a></li>
+                            <li><a href="mailto:vshivsamb@gmail.com"> Need Help <i class="ti ti-help"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -141,6 +141,9 @@
     <script src="{{ asset('assets') }}/vendor/apexcharts/timelinechart/moment.min.js"></script>
 
     <!-- Customizer js-->
+    <script>
+        var customizer_url = "{{ asset('assets/customizer.txt') }}";
+    </script>
     <script src="{{ asset('assets') }}/js/customizer.js"></script>
 
     <!-- phosphor js -->
@@ -161,6 +164,15 @@
 
     <!-- App js-->
     <script src="{{ asset('assets') }}/js/script.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var $nav = $(".header-toggle");
+            if ($nav.length) {
+                $nav.click();
+            }
+        });
+    </script>
 
     @stack('scripts')
 
